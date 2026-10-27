@@ -1,7 +1,9 @@
 package ru.itmentor.spring.boot_security.demo.model;
 
 import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
@@ -11,12 +13,12 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
     public Role() {}
 
-    public Role(String name) { // Удобный конструктор
+    public Role(String name) {
         this.name = name;
     }
 
@@ -29,4 +31,17 @@ public class Role implements GrantedAuthority {
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role)) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

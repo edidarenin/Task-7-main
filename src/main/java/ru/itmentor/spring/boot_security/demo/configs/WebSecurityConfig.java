@@ -27,14 +27,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .successHandler(successUserHandler)
-                .permitAll()
+                .formLogin().successHandler(successUserHandler).permitAll()
                 .and()
-                .logout()
-                .permitAll()
+                .logout().permitAll()
                 .and()
-                .csrf().disable();
+                .csrf().disable();   // для Postman
     }
 
     @Bean

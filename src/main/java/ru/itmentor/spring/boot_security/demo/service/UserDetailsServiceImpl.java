@@ -4,22 +4,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.itmentor.spring.boot_security.demo.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserDetailsServiceImpl(UserService userService) {
+        this.userService = userService;
     }
 
-
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Ищем юзера в БД
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        try {
+            return userService.getByUsername(username);
+        } catch (RuntimeException e) {
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
     }
 }

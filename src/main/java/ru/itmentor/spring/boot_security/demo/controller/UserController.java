@@ -5,14 +5,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.itmentor.spring.boot_security.demo.model.User;
+import ru.itmentor.spring.boot_security.demo.service.UserService;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping
-    public User getCurrentUser(@AuthenticationPrincipal User user) {
+    private final UserService userService;
 
-        return user;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public User currentUser(@AuthenticationPrincipal User user) {
+        return userService.getByUsername(user.getUsername());
     }
 }
